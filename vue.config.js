@@ -9,5 +9,8 @@ module.exports = {
         'assets': '@/assets',
       }
     }
-  }
+  },
+  lintOnSave: false
+
 }
+

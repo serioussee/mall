@@ -5,9 +5,14 @@ const Home = () => import('views/home/Home')
 const Category = () => import('views/category/Category')
 const Cart = () => import('views/cart/Cart')
 const Profile = () => import('views/profile/Profile')
-const Detail = () => import('views/detail/Detail')
 
 Vue.use(VueRouter)
+
+
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.replace = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 
 const router = new VueRouter({
   routes: [
@@ -30,10 +35,6 @@ const router = new VueRouter({
     {
       path: '/profile',
       component: Profile
-    },
-    {
-      path: '/detail',
-      component: Detail
     }
   ],
   mode: 'history'
