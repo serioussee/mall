@@ -5,6 +5,7 @@
     <recommend-view :recommends="recommend"></recommend-view>
     <feature-view/>
     <tab-control class="tab-control" :titles="['流行','新款','精选']"></tab-control>
+    <goods-list :goods="goods['pop'].list"></goods-list>
     <ul>
       <li>标签1</li>
       <li>标签2</li>
@@ -56,56 +57,6 @@
       <li>标签48</li>
       <li>标签49</li>
       <li>标签50</li>
-      <li>标签51</li>
-      <li>标签52</li>
-      <li>标签53</li>
-      <li>标签54</li>
-      <li>标签55</li>
-      <li>标签56</li>
-      <li>标签57</li>
-      <li>标签58</li>
-      <li>标签59</li>
-      <li>标签60</li>
-      <li>标签61</li>
-      <li>标签62</li>
-      <li>标签63</li>
-      <li>标签64</li>
-      <li>标签65</li>
-      <li>标签66</li>
-      <li>标签67</li>
-      <li>标签68</li>
-      <li>标签69</li>
-      <li>标签70</li>
-      <li>标签71</li>
-      <li>标签72</li>
-      <li>标签73</li>
-      <li>标签74</li>
-      <li>标签75</li>
-      <li>标签76</li>
-      <li>标签77</li>
-      <li>标签78</li>
-      <li>标签79</li>
-      <li>标签80</li>
-      <li>标签81</li>
-      <li>标签82</li>
-      <li>标签83</li>
-      <li>标签84</li>
-      <li>标签85</li>
-      <li>标签86</li>
-      <li>标签87</li>
-      <li>标签88</li>
-      <li>标签89</li>
-      <li>标签90</li>
-      <li>标签91</li>
-      <li>标签92</li>
-      <li>标签93</li>
-      <li>标签94</li>
-      <li>标签95</li>
-      <li>标签96</li>
-      <li>标签97</li>
-      <li>标签98</li>
-      <li>标签99</li>
-      <li>标签100</li>
     </ul>
   </div>
 </template>
@@ -117,8 +68,9 @@
 
   import NavBar from 'components/common/navbar/NavBar.vue'
   import TabControl from 'components/content/tabControl/TabControl.vue'
+  import GoodsList from 'components/content/goods/GoodsList.vue'
 
-  import {getHomeMultidata} from "network/home.js"
+  import {getHomeMultidata,getHomeGoods} from "network/home.js"
 
 
   export default {
@@ -127,7 +79,11 @@
       return{
         banner: [],
         recommend: [],
-
+        goods: {
+          'pop': {page: 0, list: []},
+          'new': {page: 0, list: []},
+          'sell': {page: 0, list: []},
+        }
       }
     },
     components: {
@@ -136,21 +92,39 @@
       FeatureView,
       NavBar,
       TabControl,
+      GoodsList
     },
     created() {
-      getHomeMultidata().then(res => {
-        console.log(res);
-        this.banner = res.data.banner.list;
-        this.recommend = res.data.recommend.list;
-      })
+      this.getHomeMultidata();
+      this.getHomeGoods('pop');
+      this.getHomeGoods('sell');
+      this.getHomeGoods('new');
+    },
+    methods: {
+      getHomeMultidata(){
+        getHomeMultidata().then(res => {
+          this.banner = res.data.banner.list;
+          this.recommend = res.data.recommend.list;
+        })
+      },
+      getHomeGoods(type) {
+        const page = this.goods[type].page + 1;
+        getHomeGoods(type,page).then(res => {
+          console.log(res);
+          this.goods[type].list.push(...res.data.list);
+          this.goods[type].page += 1;
+        })
+      }
+
     }
   }
 </script>
 
 <style scoped>
   #home {
-    height: 100vh;
-    position: relative;
+    padding-bottom: 44px;
+    padding-left: 0px;
+    padding-right: 0px;
   }
 
   .home-nav {
@@ -163,6 +137,6 @@
 
   .tab-control {
     position: sticky;
-    top: 44px;
+    top: 0px;
   }
 </style>

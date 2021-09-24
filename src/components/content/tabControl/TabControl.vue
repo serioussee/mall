@@ -42,6 +42,7 @@
     flex: 1;
     height: 44px;
     line-height: 44px;
+    background-color: #ffffff;
   }
 
   .tab-control-item span {
