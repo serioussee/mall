@@ -3,11 +3,14 @@
     <nav-bar class="home-nav">
       <div slot="center">首页</div>
     </nav-bar>
-    <home-swiper :banners="banner"></home-swiper>
-    <recommend-view :recommends="recommend"></recommend-view>
-    <feature-view/>
+    <scroll class="content" ref="scroll">
+      <home-swiper :banners="banner"></home-swiper>
+      <recommend-view :recommends="recommend"></recommend-view>
+      <feature-view/>
       <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-control>
-    <goods-list :goods="showGoods"></goods-list>
+      <goods-list :goods="showGoods"></goods-list>
+    </scroll>
+    <back-top @backClick.native="backClick"></back-top>
   </div>
 </template>
 
@@ -17,8 +20,10 @@
   import FeatureView from './childComps/FeatureView'
 
   import NavBar from 'components/common/navbar/NavBar.vue'
+  import Scroll from 'components/common/scroll/Scroll.vue'
   import TabControl from 'components/content/tabControl/TabControl.vue'
   import GoodsList from 'components/content/goods/GoodsList.vue'
+  import BackTop from 'components/content/backTop/BackTop.vue'
 
   import {getHomeMultidata, getHomeGoods} from "network/home.js"
 
@@ -37,13 +42,21 @@
         currentType: 'pop'
       }
     },
+    methods: {
+      backClick() {
+        this.$refs.scroll.scrollTo()
+      }
+    },
     components: {
       HomeSwiper,
       RecommendView,
       FeatureView,
       NavBar,
+      Scroll,
       TabControl,
-      GoodsList
+      GoodsList,
+      BackTop
+
     },
     created() {
       this.getHomeMultidata();
@@ -97,6 +110,7 @@
 
 <style scoped>
   #home {
+    height: 100vh;
     padding-bottom: 44px;
     padding-left: 0px;
     padding-right: 0px;
@@ -114,5 +128,13 @@
   .tab-control {
     position: sticky;
     top: 0px;
+  }
+  .content {
+    overflow: hidden;
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
   }
 </style>
