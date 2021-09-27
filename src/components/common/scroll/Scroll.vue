@@ -4,7 +4,6 @@
       <slot></slot>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -17,15 +16,42 @@
         scroll: null
       }
     },
+    props: {
+      probeType: {
+        type: Number,
+        default: 0
+      },
+      pullUpLoad: {
+        type: Boolean,
+        default: true
+      }
+    },
     methods: {
-      scrollTo(x,y,time=300) {
-        this.scroll.scrollTo(0,0);
+      scrollTo(x, y, time = 300) {
+        this.scroll.scrollTo(x, y);
+      },
+      finishPullUp() {
+        this.scroll.finishPullUp();
+      },
+      refresh() {
+        this.scroll.refresh();
       }
     },
     mounted() {
+      //1、创建BScroll对象
       this.scroll = new BScroll(this.$refs.wrapper, {
-        probeType: 3,
-      })
+        click: true,
+        probeType: this.probeType,
+        pullUpLoad: this.pullUpLoad
+      }),
+        //2、监听滚动的位置
+        this.scroll.on("scroll", (position) => {
+          this.$emit('scroll', position);
+        }),
+        //3、监听上拉事件
+        this.scroll.on("pullingUp", () => {
+          this.$emit("pullingUp");
+        })
     }
   }
 </script>

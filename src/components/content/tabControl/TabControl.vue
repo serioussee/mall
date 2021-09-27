@@ -37,13 +37,13 @@
   .tab-control {
     display: flex;
     text-align: center;
+    line-height: 40px;
+    font-size: 15px;
+    background-color: #fff;
   }
 
   .tab-control-item {
     flex: 1;
-    height: 44px;
-    line-height: 44px;
-    background-color: #ffffff;
   }
 
   .tab-control-item span {
@@ -56,5 +56,8 @@
 
   .active span {
     border-bottom: 3px solid #ff5777;
+  }
+  .tab-control-item.active span {
+    border-bottom: 2px solid #ff5777;
   }
 </style>

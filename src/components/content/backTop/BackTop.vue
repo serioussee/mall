@@ -1,12 +1,12 @@
 <template>
-  <div class="back-top">
+  <div class="back-top" @click="backClick">
     <img src="~assets/img/common/top.png" alt="">
   </div>
 </template>
 
 <script>
   export default {
-    name: "BackTop"
+    name: "BackTop",
   }
 </script>
 

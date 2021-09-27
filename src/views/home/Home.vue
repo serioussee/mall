@@ -3,14 +3,14 @@
     <nav-bar class="home-nav">
       <div slot="center">首页</div>
     </nav-bar>
-    <scroll class="content" ref="scroll">
+    <scroll class="content" ref="scroll" :probe-type="3" :pull-up-load="true" @scroll="contentScroll" @pullingUp="loadMore">
       <home-swiper :banners="banner"></home-swiper>
       <recommend-view :recommends="recommend"></recommend-view>
       <feature-view/>
       <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
-    <back-top @backClick.native="backClick"></back-top>
+    <back-top @click.native="backClick" v-show="isshowBackUp"></back-top>
   </div>
 </template>
 
@@ -39,12 +39,8 @@
           'new': {page: 0, list: []},
           'sell': {page: 0, list: []},
         },
-        currentType: 'pop'
-      }
-    },
-    methods: {
-      backClick() {
-        this.$refs.scroll.scrollTo()
+        currentType: 'pop',
+        isshowBackUp: false
       }
     },
     components: {
@@ -86,6 +82,16 @@
             this.currentType = 'sell';
         }
       },
+      backClick() {
+        this.$refs.scroll.scrollTo(0,0)
+      },
+      contentScroll(position) {
+        this.isshowBackUp = (-position.y) > 1000
+      },
+      loadMore() {
+        this.getHomeGoods(this.currentType);
+        this.$refs.scroll.refresh();
+      },
       /*
       *  网络请求相关方法
       * */
@@ -101,9 +107,10 @@
           console.log(res);
           this.goods[type].list.push(...res.data.list);
           this.goods[type].page += 1;
+          // 完成加载更多数据
+          this.$refs.scroll.finishPullUp();
         })
       }
-
     }
   }
 </script>
@@ -111,10 +118,7 @@
 <style scoped>
   #home {
     height: 100vh;
-    padding-bottom: 44px;
-    padding-left: 0px;
-    padding-right: 0px;
-    padding-top: 0px;
+    position: relative;
   }
 
   .home-nav {
