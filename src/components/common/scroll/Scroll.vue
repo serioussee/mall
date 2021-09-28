@@ -31,10 +31,10 @@
         this.scroll.scrollTo(x, y);
       },
       finishPullUp() {
-        this.scroll.finishPullUp();
+        this.scroll && this.scroll.finishPullUp();
       },
       refresh() {
-        this.scroll.refresh();
+        this.scroll && this.scroll.refresh();
       }
     },
     mounted() {
@@ -43,15 +43,20 @@
         click: true,
         probeType: this.probeType,
         pullUpLoad: this.pullUpLoad
-      }),
-        //2、监听滚动的位置
+      })
+      //2、监听滚动的位置
+      if (this.probeType === 2 || this.probeType == 3) {
         this.scroll.on("scroll", (position) => {
           this.$emit('scroll', position);
-        }),
-        //3、监听上拉事件
+        })
+      }
+      //3、监听上拉事件
+      if (this.pullUpLoad) {
         this.scroll.on("pullingUp", () => {
           this.$emit("pullingUp");
         })
+      }
+
     }
   }
 </script>

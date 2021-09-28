@@ -3,7 +3,8 @@
     <nav-bar class="home-nav">
       <div slot="center">首页</div>
     </nav-bar>
-    <scroll class="content" ref="scroll" :probe-type="3" :pull-up-load="true" @scroll="contentScroll" @pullingUp="loadMore">
+    <scroll class="content" ref="scroll" :probe-type="3" :pull-up-load="true" @scroll="contentScroll"
+            @pullingUp="loadMore">
       <home-swiper :banners="banner"></home-swiper>
       <recommend-view :recommends="recommend"></recommend-view>
       <feature-view/>
@@ -26,7 +27,7 @@
   import BackTop from 'components/content/backTop/BackTop.vue'
 
   import {getHomeMultidata, getHomeGoods} from "network/home.js"
-
+  import {debounce} from 'common/utils.js'
 
   export default {
     name: "Home",
@@ -60,6 +61,12 @@
       this.getHomeGoods('new');
       this.getHomeGoods('sell');
     },
+    mounted() {
+      const refresh = debounce(this.$refs.refresh, 500);
+      this.$bus.$on('itemImageLoad', () => {
+        refresh;
+      })
+    },
     computed: {
       showGoods() {
         return this.goods[this.currentType].list;
@@ -83,15 +90,15 @@
         }
       },
       backClick() {
-        this.$refs.scroll.scrollTo(0,0)
+        this.$refs.scroll.scrollTo(0, 0)
       },
       contentScroll(position) {
         this.isshowBackUp = (-position.y) > 1000
       },
       loadMore() {
         this.getHomeGoods(this.currentType);
-        this.$refs.scroll.refresh();
       },
+
       /*
       *  网络请求相关方法
       * */
@@ -133,6 +140,7 @@
     position: sticky;
     top: 0px;
   }
+
   .content {
     overflow: hidden;
     position: absolute;
